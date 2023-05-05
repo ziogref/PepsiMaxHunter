@@ -1,3 +1,10 @@
-Just edit lines 114 and 115 with your Pushover User and Token keys and run it.
+PepsiMaxHunter uses the pre-filled links in lines 4-9.
+the Program then accesses the links and pulls the prices and pack sizes from the JSON data then performs math to get the price per can
+It then sorts the results by price per can
+It then pushes the result via Pushover
 
-Note: Woolworths may not work due to the WAF so you may not get results for that. I'm trying to work around that
+Lines 120 and 121 need to be edited with your pushover account info.
+
+IN THEORY you could replace Pepsi max with any 'pack of cans' product but you may need to alter it a little
+
+you could also substitute in any product but you would need to edit a lot.
