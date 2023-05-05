@@ -21,7 +21,7 @@ for link in links:
 
         # Stores the supermarket as a variable
         Store = "Coles"
-        
+
         #Try/except is incase the the website timesout
         try:
             # Gets the data from the Coles links
@@ -63,8 +63,14 @@ for link in links:
 
         #Try/except is incase the the website timesout
         try:
+            #Get cookie from the root website to use when calling the API
+            response = requests.get('https://www.woolworths.com.au', headers=getHeaders, timeout=10)
+            cookies = response.cookies
+
+            WooliesAPICookie = {'bm_sz': cookies.get('bm_sz')}
+
             # Gets the data from the Woolies links
-            jsondata = requests.get(link, headers=getHeaders, timeout=10).json()
+            jsondata = requests.get(link, headers=getHeaders, cookies=WooliesAPICookie, timeout=10).json()
 
             #Price stored as a String for Displaying in a message later on
             priceString = str((jsondata['offers']['price']))
