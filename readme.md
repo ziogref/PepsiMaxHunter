@@ -3,7 +3,7 @@ the Program then accesses the links and pulls the prices and pack sizes from the
 It then sorts the results by price per can
 It then pushes the result via Pushover
 
-Lines 120 and 121 need to be edited with your pushover account info.
+Lines 136 and 137 need to be edited with your pushover account info.
 
 IN THEORY you could replace Pepsi max with any 'pack of cans' product but you may need to alter it a little
 
