@@ -1,22 +1,28 @@
-import requests, http.client, urllib, json, re
+import requests, http.client, urllib, re
 
-# Variables
-ColesPepsi10Link = "https://www.coles.com.au/_next/data/20230502.01_v3.34.0/en/product/pepsi-max-multipack-cans-375ml-10-pack-2684166.json?slug=pepsi-max-multipack-cans-375ml-10-pack-2684166"
-ColesPepsi24Link = "https://www.coles.com.au/_next/data/20230502.01_v3.34.0/en/product/pepsi-soft-drink-cola-max-24-pack-7366022.json?slug=pepsi-soft-drink-cola-max-24-pack-7366022"
-ColesPepsi30Link = "https://www.coles.com.au/_next/data/20230502.01_v3.34.0/en/product/pepsi-max-soft-drink-375ml-can-30-pack-7837413.json?slug=pepsi-max-soft-drink-375ml-can-30-pack-7837413"
-WooliesPepsi10Link = "https://www.woolworths.com.au/api/v3/ui/schemaorg/product/442190"
-WooliesPepsi24Link = "https://www.woolworths.com.au/api/v3/ui/schemaorg/product/54291"
-WooliesPepsi30Link = "https://www.woolworths.com.au/api/v3/ui/schemaorg/product/773129"
+#Product links in JSON format
+links = {
+'ColesPepsi10Link': 'https://www.coles.com.au/_next/data/20230502.01_v3.34.0/en/product/pepsi-max-multipack-cans-375ml-10-pack-2684166.json?slug=pepsi-max-multipack-cans-375ml-10-pack-2684166',
+'ColesPepsi24Link': 'https://www.coles.com.au/_next/data/20230502.01_v3.34.0/en/product/pepsi-soft-drink-cola-max-24-pack-7366022.json?slug=pepsi-soft-drink-cola-max-24-pack-7366022',
+'ColesPepsi30Link': 'https://www.coles.com.au/_next/data/20230502.01_v3.34.0/en/product/pepsi-max-soft-drink-375ml-can-30-pack-7837413.json?slug=pepsi-max-soft-drink-375ml-can-30-pack-7837413',
+'WooliesPepsi10Link': 'https://www.woolworths.com.au/shop/productdetails/442190/pepsi-max-cans',
+'WooliesPepsi24Link': 'https://www.woolworths.com.au/shop/productdetails/54291/pepsi-max-cans',
+'WooliesPepsi30Link': 'https://www.woolworths.com.au/shop/productdetails/773129/pepsi-max-cans',
+}
+
 # User Agent was pulled from my Dell Laptop on 04/05/2023
 getHeaders = {'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36'}
 
 # Creates a "dictionary" in Python this is a way of storing data, so below the for loop will add data to the dictionary
 ProcessedInformation = {}
 
-# links contains all the "links" listed above to run a for loop over. But due to Woolworths and Coles information being different I have to filter differently
-# thats why there is an "if" loop in the "for" loop
-links =[ColesPepsi10Link, ColesPepsi24Link, ColesPepsi30Link, WooliesPepsi10Link, WooliesPepsi24Link, WooliesPepsi30Link]
-for link in links:
+# for loop that goes over each item in links array
+# link is the link name (e.g ColesPepsi24) | links.keys is items within the array
+for link in links.keys():
+    # links[link] is just the url
+    link = links[link]
+
+    # If link has coles in the URL, its going to go through the coles filter
     if 'coles' in str(link):
 
         # Stores the supermarket as a variable
@@ -56,6 +62,7 @@ for link in links:
         except requests.exceptions.Timeout:
             print('Coles timed out')
 
+    # If link has woolworth in the URL, its going to go through the coles filter
     if 'woolworths' in str (link):
         
         # Stores the supermarket as a variable
@@ -63,6 +70,15 @@ for link in links:
 
         #Try/except is incase the the website timesout
         try:
+            # split the URL into parts using the "/" separator
+            url_parts = link.split("/")
+
+            # get the second-to-last part of the URL, which contains the product code
+            product_code = url_parts[-2]
+
+            # Add the Product code to the API URL
+            apilink = "https://www.woolworths.com.au/api/v3/ui/schemaorg/product/" + product_code
+
             #Get cookie from the root website to use when calling the API
             response = requests.get('https://www.woolworths.com.au', headers=getHeaders, timeout=10)
             cookies = response.cookies
@@ -70,7 +86,7 @@ for link in links:
             WooliesAPICookie = {'bm_sz': cookies.get('bm_sz')}
 
             # Gets the data from the Woolies links
-            jsondata = requests.get(link, headers=getHeaders, cookies=WooliesAPICookie, timeout=10).json()
+            jsondata = requests.get(apilink, headers=getHeaders, cookies=WooliesAPICookie, timeout=10).json()
 
             #Price stored as a String for Displaying in a message later on
             priceString = str((jsondata['offers']['price']))
