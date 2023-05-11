@@ -3,7 +3,7 @@ the Program then accesses the links and pulls the prices and pack sizes from the
 It then sorts the results by price per can
 It then pushes the result via Pushover
 
-Lines 145 and 146 need to be edited with your pushover account info.
+Lines 180 and 181 need to be edited with your pushover account info.
 
 This is currently optimised for Pepsi Max only and appears to have issues with other canned drinks. I am going to be working on changing this to universal support for all multi-pack can drink products.
 
