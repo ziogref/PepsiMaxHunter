@@ -11,3 +11,5 @@ Pushover is a free Push notification software (not owned by me) that you can cal
 The mobile app does have a one-time purchase price.
 
 Pushover.net
+
+Requires requests and pytz installed
